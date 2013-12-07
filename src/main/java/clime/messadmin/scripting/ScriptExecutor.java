@@ -49,18 +49,19 @@ public class ScriptExecutor extends BaseAdminActionProvider implements ServerDat
 	/** {@inheritDoc} */
 	@Override
 	public String getApplicationDataTitle(ServletContext context) {
-		return getServerDataTitle();
+		return I18NSupport.getLocalizedMessage(BUNDLE_NAME, I18NSupport.getClassLoader(context), "title");//$NON-NLS-1$
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public String getServerDataTitle() {
-		return I18NSupport.getLocalizedMessage(BUNDLE_NAME, "title");//$NON-NLS-1$
+		return getApplicationDataTitle(null);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public String getXHTMLApplicationData(ServletContext context) {
+		final ClassLoader cl = I18NSupport.getClassLoader(context);
 		String urlPrefix = "?" + ACTION_PARAMETER_NAME + '=' + getActionID();
 		if (context != null) {
 			urlPrefix += "&" + BaseAdminActionWithContext.CONTEXT_KEY + '=' + urlEncodeUTF8(Server.getInstance().getInternalContext(context));
@@ -69,12 +70,12 @@ public class ScriptExecutor extends BaseAdminActionProvider implements ServerDat
 		xhtml.append("<form action=\"").append(urlPrefix).append("\" method=\"post\" target=\"_blank\">\n");
 
 		// Script TextArea
-		xhtml.append("	<label>").append(I18NSupport.getLocalizedMessage(BUNDLE_NAME, "script")).append("<br />");//$NON-NLS-2$
+		xhtml.append("	<label>").append(I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "script")).append("<br />");//$NON-NLS-2$
 		xhtml.append("	<textarea id=\"").append(SCRIPT).append("\" name=\"").append(SCRIPT).append("\" rows=\"10\" cols=\"80\">print('Hello, World!\\n'); // prints on the System Console</textarea>");
 		xhtml.append("</label><br />\n");
 
 		// Script Engine Name
-		xhtml.append("	<label>").append(I18NSupport.getLocalizedMessage(BUNDLE_NAME, "script_engine_name")).append("&nbsp;");//$NON-NLS-2$
+		xhtml.append("	<label>").append(I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl,"script_engine_name")).append("&nbsp;");//$NON-NLS-2$
 //		xhtml.append("<input type=\"text\" id=\"").append(SCRIPT_ENGINE_NAME).append("\" name=\"").append(SCRIPT_ENGINE_NAME).append("\" value=\"").append(DEFAULT_SCRIPT_ENGINE_NAME).append("\" />");
 		xhtml.append("<select id=\"").append(SCRIPT_ENGINE_NAME).append("\" name=\"").append(SCRIPT_ENGINE_NAME).append("\">\n");
 		for (ScriptEngineFactory scriptEngineFactory : getScriptEngineManager(context).getEngineFactories()) {
@@ -84,7 +85,7 @@ public class ScriptExecutor extends BaseAdminActionProvider implements ServerDat
 			String languageVersion = scriptEngineFactory.getLanguageVersion();
 			String id = scriptEngineFactory.getNames().get(0);
 			String label = languageName+'/'+languageVersion + " ("+engineName+'/'+engineVersion+')';
-			String title = I18NSupport.getLocalizedMessage(BUNDLE_NAME, "aliases") + ' ';//$NON-NLS-1$
+			String title = I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "aliases") + ' ';//$NON-NLS-1$
 			for (Iterator<String> iter = scriptEngineFactory.getNames().iterator(); iter.hasNext();) {
 				String name = iter.next();
 				title += name;
